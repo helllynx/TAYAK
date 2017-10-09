@@ -9,8 +9,6 @@ import ply.yacc as yacc
 import os
 
 import math
-import re
-
 
 class Parser(object):
     tokens = ()
@@ -47,10 +45,10 @@ class Parser(object):
 class Calc(Parser):
 
     tokens = (
-        'NAME', 'NUMBER',
+        'NUMBER','NAME',
         'PLUS', 'MINUS', 'EXP', 'TIMES', 'DIVIDE', 'EQUALS',
         'LPAREN', 'RPAREN',
-        'LOG',
+        'LOG', 'COMMA'
     )
 
     # Tokens
@@ -62,7 +60,9 @@ class Calc(Parser):
     t_EQUALS = r'='
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
-    t_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t_NAME = r'(?![log])[a-zA-Z_][a-zA-Z0-9_]*'
+    t_LOG = r'log'
+    t_COMMA = r','
 
     def t_NUMBER(self, t):
         r'\d+'
@@ -72,19 +72,6 @@ class Calc(Parser):
             print("Integer value too large %s" % t.value)
             t.value = 0
         return t
-
-    def t_LOG(self, t):
-        r'(log\(\w+,\w+\))'
-        try:
-            r = re.search('(log\((\w+),(\w+)\))', t.value)
-            t1 = float(eval(r.group(2)))
-            t2 = float(eval(r.group(3)))
-            t.value = math.log(float(r.group(2)),float(r.group(3)))
-        except ValueError:
-            print("Log error!")
-            t.value = 0
-        return t
-
 
     t_ignore = " \t"
 
@@ -100,9 +87,8 @@ class Calc(Parser):
     precedence = (
         ('left', 'PLUS', 'MINUS'),
         ('left', 'TIMES', 'DIVIDE'),
-        ('left', 'EXP'),
+        ('left', 'EXP', 'LOG'),
         ('right', 'UMINUS'),
-        ('nonassoc', 'LOG'),
     )
 
     def p_statement_assign(self, p):
@@ -154,8 +140,8 @@ class Calc(Parser):
             p[0] = 0
 
     def p_expression_log(self, p):
-        'expression : LOG'
-        p[0] = p[1]
+        'expression : LOG LPAREN expression COMMA expression RPAREN'
+        p[0] = math.log(p[3],p[5])
 
     def p_error(self, p):
         if p:
