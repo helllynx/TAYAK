@@ -65,9 +65,9 @@ class Calc(Parser):
     t_COMMA = r','
 
     def t_NUMBER(self, t):
-        r'\d+'
+        r'[0-9]*[.]?[0-9]+'
         try:
-            t.value = int(t.value)
+            t.value = float(t.value)
         except ValueError:
             print("Integer value too large %s" % t.value)
             t.value = 0
