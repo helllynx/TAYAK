@@ -48,22 +48,47 @@ class MyStateMachine:
         s_state = int("".join(str(x) for x in nodes))
         self.nodes[s_state] = Node(s_state, False, new_trans)
 
+        self.checkEdge(nodes, s_state)
+        self.removeNodes(nodes)
+
+    def removeNodes(self, nodes):
+        for node in nodes:
+            del self.nodes[node]
+
+    def checkEdge(self, n_list, new_state):
+        print("CHECK EDGE")
+        for node in self.nodes:
+            for i in range(0, len(self.nodes[node].transitions):
+                if(n_list.__contains__()):
+                    print(t)
+                    self.nodes[node].transitions[]
+
+
 
     def check_nfa_cast_to_dfa(self):
         k=0
-        for n in self.nodes:
-            f = self.nodes[n].transitions[0][0]
+        nodes_copy = self.nodes.copy()
+        for n in nodes_copy:
+            f = nodes_copy[n].transitions[0][0]
             # print(f)
-            for t in self.nodes[n].transitions:
+            for t in nodes_copy[n].transitions:
                 if(t[0]==f): k+=1
             if (k > 1):
-                self.getRemovedNodeTrans(f, self.nodes[n].transitions)
+                self.getRemovedNodeTrans(f, nodes_copy[n].transitions)
 
 
             k = 0
 
+    def printNodes(self):
+        print("==========================")
+        for n in self.nodes:
+            print(self.nodes[n])
+        print("==========================")
+
     def start(self, string):
-        # self.check_nfa_cast_to_dfa()
+        self.printNodes()
+        self.check_nfa_cast_to_dfa()
+        self.printNodes()
 
         for c in string:
             state = self.get_state(c)

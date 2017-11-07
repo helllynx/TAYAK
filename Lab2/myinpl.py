@@ -40,9 +40,6 @@ for node in text:
         print("INPUT FILE ERROR!!!")
 
 
-for n in nodes:
-    print(nodes[n])
-
 
 print("--------------------------------")
 
