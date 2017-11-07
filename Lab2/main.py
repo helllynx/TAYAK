@@ -1,47 +1,50 @@
-import os, sys, inspect
-
-cmd_folder = os.path.realpath(
-    os.path.dirname(
-        os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe() ))[0])))
-
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
-
-from transitions import *
-from transitions.extensions import GraphMachine
-from IPython.display import Image, display, display_png
-
-class Matter(object):
-    def is_valid(self):
-        return True
-
-    def is_not_valid(self):
-        return False
-
-    def is_also_valid(self):
-        return True
-
-    # graph object is created by the machine
-    def show_graph(self, **kwargs):
-        self.get_graph(**kwargs).draw('state.png', prog='dot')
-        display(Image('state.png'))
+from MyFSM import Node, MyStateMachine
+from re import compile
 
 
-transitions = [
-    ['melt', 'solid', 'liquid'],
-    ['evaporate', 'liquid', 'gas'],
-    ['sublimate', 'solid', 'gas'],
-    ['ionize', 'gas', 'plasma']
-]
-states=['solid', 'liquid', 'gas', 'plasma']
+# s = "if(a>b)"
+s = "if(a>(b+c)]"
+# s = ""
+nodes = {}
 
-model = Matter()
-machine = GraphMachine(model=model,
-                       states=states,
-                       transitions=transitions,
-                       initial='solid',
-                       show_auto_transitions=False, # default value is False
-                       title="Lab2",
-                       show_conditions=True)
-model.show_graph()
+
+with open('input.txt', 'r') as in_schem:
+    text = in_schem.read().splitlines()
+
+print("READ FROM FILE ->")
+print(text)
+print("--------------------------------")
+
+re_n = compile(r'(.)(\d+),(.)=(\w)(\w+)')
+
+print("STATES:")
+
+for node in text:
+    try:
+        res = re_n.match(node)
+        state = int(res.group(2))
+        c = res.group(3)
+
+        if(res.group(1) == 'q'):
+            final = False
+        else:
+            final = True
+
+        ref = int(res.group(5))
+
+        if (nodes.__contains__(state)):
+            nodes[state].addTransition(c, ref)
+        else:
+            nodes[state] = Node(state, final, [[c, ref]])
+
+    except:
+        print("INPUT FILE ERROR!!!")
+
+
+
+print("--------------------------------")
+
+
+MyStateMachine(nodes, 0).start(s)
+
 
