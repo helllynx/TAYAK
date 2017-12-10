@@ -3,8 +3,13 @@ from re import compile
 
 
 # s = "if(a>b)"
-s = "if(a>(b+c)]"
+# s = "if(a>(b+c)]"
 # s = ""
+
+# s = ";ab -> [ ] -> + -> [ ] -> cd -> [ ] -> * -> [ ] -> [e] -> [ ] -> = -> [ ] -> 357"
+# s = ";ba"
+s = "ab+cd*eeeee  357"
+
 nodes = {}
 
 

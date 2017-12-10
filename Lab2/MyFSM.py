@@ -140,7 +140,9 @@ class MyStateMachine:
                 print(str(self.state) + " -> " + str(state) + "  char: " + c)
                 self.state = state
                 self.terminate = self.nodes[state].terminate
-
+            else:
+                print("Bad Input String!")
+                return
 
         if(self.terminate == True and len(string)>0):
             print("Success!")
